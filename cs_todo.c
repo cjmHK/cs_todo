@@ -137,12 +137,12 @@ void command_loop(struct todo_list *todo) {
             if(t == NULL){
                 printf("Could not find task '%s' in category '%s'.\n", task, category);
             }else{
-                if(t->category == LOW){
-                    t->category = MEDIUM;
-                }else if(t->category == MEDIUM){
-                    t->category = HIGH;
-                }else if(t->category == HIGH){
-                    t->category = LOW;
+                if(t->priority == LOW){
+                    t->priority = MEDIUM;
+                }else if(t->priority == MEDIUM){
+                    t->priority = HIGH;
+                }else if(t->priority == HIGH){
+                    t->priority = LOW;
                 }
             }
         }
