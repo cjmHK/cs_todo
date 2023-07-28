@@ -261,7 +261,7 @@ int number_tasks(struct todo_list *todo){
 void remove_task(struct todo_list *todo, struct task *t){
     struct task *ct = todo->tasks;
     if(ct == t){
-        todo->tasks == todo->tasks->next;
+        todo->tasks = todo->tasks->next;
         return;
     }
     while(ct->next != NULL){
