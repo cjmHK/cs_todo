@@ -85,6 +85,8 @@ int main(void) {
 
     command_loop(todo);
 
+    puts("All done!");
+
     return 0;
 }
 
