@@ -61,6 +61,8 @@ void remove_task(struct todo_list *todo, struct task *t);
 
 void add_completed_task(struct todo_list *todo, struct completed_task *t_d);
 
+void print_completed_tasks(struct todo_list *todo);
+
 ////////////////////////////////////////////////////////////////////////////////
 //////////////////////// PROVIDED HELPER PROTOTYPES ////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
@@ -121,6 +123,7 @@ void command_loop(struct todo_list *todo) {
     printf("Enter Command: ");
     char command;
     char buffer[MAX_STRING_LENGTH];
+    int print_type = 0;
     while (scanf(" %c", &command) == 1) {
         // TODO: Add to this loop as you complete the assignment
         if (command == COMMAND_ADD_TASK) {
@@ -132,7 +135,12 @@ void command_loop(struct todo_list *todo) {
             // add to list
             add_task(todo, t);
         }else if(command == COMMAND_PRINT_TASK){
-            print_all_tasks(todo);
+            if(print_type == 0){
+                print_all_tasks(todo);
+            }else{
+                print_completed_tasks(todo);
+            }
+            print_type = !print_type;
         }else if(command == COMMAND_UPDATE_PRIORITY){
             fgets(buffer, MAX_STRING_LENGTH, stdin);
 
@@ -178,6 +186,11 @@ void command_loop(struct todo_list *todo) {
                 // add completed task
                 add_completed_task(todo, t_d);
             }
+        }
+
+        // reset print type
+        if(command != COMMAND_PRINT_TASK){
+            print_type = 0;
         }
 
         printf("Enter Command: ");
@@ -283,6 +296,21 @@ void add_completed_task(struct todo_list *todo, struct completed_task *t_d){
         ct_d = ct_d->next;
     }
     ct_d->next = t_d;
+}
+
+void print_completed_tasks(struct todo_list *todo){
+    struct completed_task *ct_d = todo->completed_tasks;
+    puts("==== Completed Tasks ====");
+    if(ct_d == NULL){
+        puts("No tasks have been completed today!");
+    }else{
+        while(ct_d != NULL){
+            print_completed_task(ct_d);
+            ct_d = ct_d->next;
+        }
+    }
+
+    puts("=========================");
 }
 
 
