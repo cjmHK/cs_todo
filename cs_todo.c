@@ -189,7 +189,7 @@ void command_loop(struct todo_list *todo) {
         }else if(command == COMMAND_PRINT_COMPLETED){
             print_completed_tasks(todo);
         }else if(command == COMMAND_PRINT_TIME){
-
+            print_average_time(todo);
         }
 
         printf("Enter Command: ");
