@@ -10,6 +10,7 @@
 
 // You *should* #define each command
 #define COMMAND_ADD_TASK 'a'
+#define COMMAND_PRINT_TASK 'p'
 
 enum priority { LOW, MEDIUM, HIGH };
 
@@ -44,6 +45,8 @@ void command_loop(struct todo_list *todo);
 void add_task(struct todo_list *todo, struct task *t);
 
 int has_same_task(struct todo_list *todo, struct task *t);
+
+void print_all_tasks(struct todo_list *todo);
 
 ////////////////////////////////////////////////////////////////////////////////
 //////////////////////// PROVIDED HELPER PROTOTYPES ////////////////////////////
@@ -115,6 +118,8 @@ void command_loop(struct todo_list *todo) {
             parse_add_task_line(buffer, t->task_name, t->category, &t->priority);
             // add to list
             add_task(todo, t);
+        }else if(command == COMMAND_PRINT_TASK){
+            print_all_tasks(todo);
         }
 
         printf("Enter Command: ");
@@ -151,8 +156,25 @@ int has_same_task(struct todo_list *todo, struct task *t) {
         if(strcmp(ct->task_name, t->task_name) == 0 && strcmp(ct->category, t->category) == 0){
             return 1;
         }
+        ct = ct->next;
     }
     return 0;
+}
+
+void print_all_tasks(struct todo_list *todo){
+    struct task *ct = todo->tasks;
+    puts("==== Your ToDo List ====");
+    if(ct == NULL){
+        puts("All tasks completed, you smashed it!");
+    }else{
+        int task_num = 1;
+        while(ct != NULL){
+            print_one_task(task_num, ct);
+            task_num++;
+            ct = ct->next;
+        }
+    }
+    puts("====   That's it!   ====");
 }
 
 
