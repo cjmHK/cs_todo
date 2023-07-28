@@ -291,11 +291,8 @@ void add_completed_task(struct todo_list *todo, struct completed_task *t_d){
         todo->completed_tasks = t_d;
         return;
     }
-    struct completed_task *ct_d = todo->completed_tasks;
-    while(ct_d->next != NULL){
-        ct_d = ct_d->next;
-    }
-    ct_d->next = t_d;
+    t_d->next = todo->completed_tasks;
+    todo->completed_tasks = t_d;
 }
 
 void print_completed_tasks(struct todo_list *todo){
