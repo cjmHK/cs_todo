@@ -13,6 +13,7 @@
 #define COMMAND_PRINT_TASK 'p'
 #define COMMAND_UPDATE_PRIORITY 'i'
 #define COMMAND_PRINT_NUMBER 'n'
+#define COMMAND_TASK_COMPLETION 'c'
 
 enum priority { LOW, MEDIUM, HIGH };
 
@@ -55,6 +56,10 @@ struct task *get_task(struct todo_list *todo,
 void print_all_tasks(struct todo_list *todo);
 
 int number_tasks(struct todo_list *todo);
+
+void remove_task(struct todo_list *todo, struct task *t);
+
+void add_completed_task(struct todo_list *todo, struct completed_task *t_d);
 
 ////////////////////////////////////////////////////////////////////////////////
 //////////////////////// PROVIDED HELPER PROTOTYPES ////////////////////////////
@@ -150,6 +155,29 @@ void command_loop(struct todo_list *todo) {
             }
         }else if(command == COMMAND_PRINT_NUMBER){
             printf("There are %d items on your list!\n", number_tasks(todo));
+        }else if(command == COMMAND_TASK_COMPLETION){
+            fgets(buffer, MAX_STRING_LENGTH, stdin);
+
+            char task[MAX_TASK_LENGTH];
+            char category[MAX_CATEGORY_LENGTH];
+            int start_time;
+            int finish_time;
+            parse_complete_task_line(buffer, task, category, &start_time, &finish_time);
+
+            struct task *t = get_task(todo, task, category);
+            if(t == NULL){
+                printf("Could not find task '%s' in category '%s'.\n", task, category);
+            }else{
+                remove_task(todo, t);
+                // create completed task
+                struct completed_task *t_d = malloc(sizeof(struct completed_task));
+                t_d->task = t;
+                t_d->next = NULL;
+                t_d->start_time = start_time;
+                t_d->finish_time = finish_time;
+                // add completed task
+                add_completed_task(todo, t_d);
+            }
         }
 
         printf("Enter Command: ");
@@ -228,6 +256,33 @@ int number_tasks(struct todo_list *todo){
         ct = ct->next;
     }
     return cnt;
+}
+
+void remove_task(struct todo_list *todo, struct task *t){
+    struct task *ct = todo->tasks;
+    if(ct == t){
+        todo->tasks == todo->tasks->next;
+        return;
+    }
+    while(ct->next != NULL){
+        if(ct->next == t){
+            ct->next = t->next;
+            break;
+        }
+        ct = ct->next;
+    }
+}
+
+void add_completed_task(struct todo_list *todo, struct completed_task *t_d){
+    if(todo->completed_tasks == NULL){
+        todo->completed_tasks = t_d;
+        return;
+    }
+    struct completed_task *ct_d = todo->completed_tasks;
+    while(ct_d->next != NULL){
+        ct_d = ct_d->next;
+    }
+    ct_d->next = t_d;
 }
 
 
