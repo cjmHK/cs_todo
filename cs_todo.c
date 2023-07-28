@@ -11,6 +11,7 @@
 // You *should* #define each command
 #define COMMAND_ADD_TASK 'a'
 #define COMMAND_PRINT_TASK 'p'
+#define COMMAND_UPDATE_PRIORITY 'i'
 
 enum priority { LOW, MEDIUM, HIGH };
 
@@ -45,6 +46,10 @@ void command_loop(struct todo_list *todo);
 void add_task(struct todo_list *todo, struct task *t);
 
 int has_same_task(struct todo_list *todo, struct task *t);
+
+struct task *get_task(struct todo_list *todo,
+        char task_name[MAX_TASK_LENGTH],
+        char task_category[MAX_CATEGORY_LENGTH]);
 
 void print_all_tasks(struct todo_list *todo);
 
@@ -120,6 +125,26 @@ void command_loop(struct todo_list *todo) {
             add_task(todo, t);
         }else if(command == COMMAND_PRINT_TASK){
             print_all_tasks(todo);
+        }else if(command == COMMAND_UPDATE_PRIORITY){
+            fgets(buffer, MAX_STRING_LENGTH, stdin);
+
+            char task[MAX_TASK_LENGTH];
+            char category[MAX_CATEGORY_LENGTH];
+            parse_task_category_line(buffer, task, category);
+
+            struct task *t = get_task(todo, task, category);
+
+            if(t == NULL){
+                printf("Could not find task '%s' in category '%s'.\n", task, category);
+            }else{
+                if(t->category == LOW){
+                    t->category = MEDIUM;
+                }else if(t->category == MEDIUM){
+                    t->category = HIGH;
+                }else if(t->category == HIGH){
+                    t->category = LOW;
+                }
+            }
         }
 
         printf("Enter Command: ");
@@ -159,6 +184,19 @@ int has_same_task(struct todo_list *todo, struct task *t) {
         ct = ct->next;
     }
     return 0;
+}
+
+struct task *get_task(struct todo_list *todo,
+        char task_name[MAX_TASK_LENGTH],
+        char task_category[MAX_CATEGORY_LENGTH]){
+    struct task *ct = todo->tasks;
+    while(ct != NULL){
+        if(strcmp(ct->task_name, task_name) == 0 && strcmp(ct->category, task_category) == 0){
+            return ct;
+        }
+        ct = ct->next;
+    }
+    return NULL;
 }
 
 void print_all_tasks(struct todo_list *todo){
