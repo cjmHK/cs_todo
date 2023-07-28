@@ -16,6 +16,7 @@
 #define COMMAND_TASK_COMPLETION 'c'
 #define COMMAND_PRINT_COMPLETED 'P'
 #define COMMAND_PRINT_TIME 'e'
+#define COMMAND_DELETE_TASK 'd'
 
 enum priority { LOW, MEDIUM, HIGH };
 
@@ -190,6 +191,20 @@ void command_loop(struct todo_list *todo) {
             print_completed_tasks(todo);
         }else if(command == COMMAND_PRINT_TIME){
             print_average_time(todo);
+        }else if(command == COMMAND_DELETE_TASK){
+            fgets(buffer, MAX_STRING_LENGTH, stdin);
+
+            char task[MAX_TASK_LENGTH];
+            char category[MAX_CATEGORY_LENGTH];
+            parse_task_category_line(buffer, task, category);
+
+            struct task *t = get_task(todo, task, category);
+
+            if(t == NULL){
+                printf("Could not find task '%s' in category '%s'.\n", task, category);
+            }else{
+                remove_task(todo, t);
+            }
         }
 
         printf("Enter Command: ");
