@@ -83,6 +83,8 @@ int main(void) {
     todo->tasks = NULL;
     todo->completed_tasks = NULL;
 
+    puts("Welcome to CS ToDo!");
+
     command_loop(todo);
 
     puts("All done!");
