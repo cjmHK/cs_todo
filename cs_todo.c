@@ -12,6 +12,7 @@
 #define COMMAND_ADD_TASK 'a'
 #define COMMAND_PRINT_TASK 'p'
 #define COMMAND_UPDATE_PRIORITY 'i'
+#define COMMAND_PRINT_NUMBER 'n'
 
 enum priority { LOW, MEDIUM, HIGH };
 
@@ -52,6 +53,8 @@ struct task *get_task(struct todo_list *todo,
         char task_category[MAX_CATEGORY_LENGTH]);
 
 void print_all_tasks(struct todo_list *todo);
+
+int number_tasks(struct todo_list *todo);
 
 ////////////////////////////////////////////////////////////////////////////////
 //////////////////////// PROVIDED HELPER PROTOTYPES ////////////////////////////
@@ -145,6 +148,8 @@ void command_loop(struct todo_list *todo) {
                     t->priority = LOW;
                 }
             }
+        }else if(command == COMMAND_PRINT_NUMBER){
+            printf("There are %d items on your list!\n", number_tasks(todo));
         }
 
         printf("Enter Command: ");
@@ -213,6 +218,16 @@ void print_all_tasks(struct todo_list *todo){
         }
     }
     puts("====   That's it!   ====");
+}
+
+int number_tasks(struct todo_list *todo){
+    int cnt = 0;
+    struct task *ct = todo->tasks;
+    while(ct != NULL){
+        cnt += 1;
+        ct = ct->next;
+    }
+    return cnt;
 }
 
 
