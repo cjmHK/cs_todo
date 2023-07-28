@@ -55,8 +55,8 @@ void add_task(struct todo_list *todo, struct task *t);
 int has_same_task(struct todo_list *todo, struct task *t);
 
 struct task *get_task(struct todo_list *todo,
-        char task_name[MAX_TASK_LENGTH],
-        char task_category[MAX_CATEGORY_LENGTH]);
+                      char task_name[MAX_TASK_LENGTH],
+                      char task_category[MAX_CATEGORY_LENGTH]);
 
 void print_all_tasks(struct todo_list *todo);
 
@@ -153,9 +153,9 @@ void command_loop(struct todo_list *todo) {
             parse_add_task_line(buffer, t->task_name, t->category, &t->priority);
             // add to list
             add_task(todo, t);
-        }else if(command == COMMAND_PRINT_TASK){
+        } else if (command == COMMAND_PRINT_TASK) {
             print_all_tasks(todo);
-        }else if(command == COMMAND_UPDATE_PRIORITY){
+        } else if (command == COMMAND_UPDATE_PRIORITY) {
             fgets(buffer, MAX_STRING_LENGTH, stdin);
 
             char task[MAX_TASK_LENGTH];
@@ -164,20 +164,20 @@ void command_loop(struct todo_list *todo) {
 
             struct task *t = get_task(todo, task, category);
 
-            if(t == NULL){
+            if (t == NULL) {
                 printf("Could not find task '%s' in category '%s'.\n", task, category);
-            }else{
-                if(t->priority == LOW){
+            } else {
+                if (t->priority == LOW) {
                     t->priority = MEDIUM;
-                }else if(t->priority == MEDIUM){
+                } else if (t->priority == MEDIUM) {
                     t->priority = HIGH;
-                }else if(t->priority == HIGH){
+                } else if (t->priority == HIGH) {
                     t->priority = LOW;
                 }
             }
-        }else if(command == COMMAND_PRINT_NUMBER){
+        } else if (command == COMMAND_PRINT_NUMBER) {
             printf("There are %d items on your list!\n", number_tasks(todo));
-        }else if(command == COMMAND_TASK_COMPLETION){
+        } else if (command == COMMAND_TASK_COMPLETION) {
             fgets(buffer, MAX_STRING_LENGTH, stdin);
 
             char task[MAX_TASK_LENGTH];
@@ -187,9 +187,9 @@ void command_loop(struct todo_list *todo) {
             parse_complete_task_line(buffer, task, category, &start_time, &finish_time);
 
             struct task *t = get_task(todo, task, category);
-            if(t == NULL){
+            if (t == NULL) {
                 printf("Could not find task '%s' in category '%s'.\n", task, category);
-            }else{
+            } else {
                 remove_task(todo, t);
                 // create completed task
                 struct completed_task *t_d = malloc(sizeof(struct completed_task));
@@ -200,11 +200,11 @@ void command_loop(struct todo_list *todo) {
                 // add completed task
                 add_completed_task(todo, t_d);
             }
-        }else if(command == COMMAND_PRINT_COMPLETED){
+        } else if (command == COMMAND_PRINT_COMPLETED) {
             print_completed_tasks(todo);
-        }else if(command == COMMAND_PRINT_TIME){
+        } else if (command == COMMAND_PRINT_TIME) {
             print_average_time(todo);
-        }else if(command == COMMAND_DELETE_TASK){
+        } else if (command == COMMAND_DELETE_TASK) {
             fgets(buffer, MAX_STRING_LENGTH, stdin);
 
             char task[MAX_TASK_LENGTH];
@@ -213,14 +213,14 @@ void command_loop(struct todo_list *todo) {
 
             struct task *t = get_task(todo, task, category);
 
-            if(t == NULL){
+            if (t == NULL) {
                 printf("Could not find task '%s' in category '%s'.\n", task, category);
-            }else{
+            } else {
                 remove_task(todo, t);
             }
-        }else if(command == COMMAND_FINISH_DAY){
+        } else if (command == COMMAND_FINISH_DAY) {
             delete_completed_tasks(todo);
-        }else if(command == COMMAND_REPEAT_TASK){
+        } else if (command == COMMAND_REPEAT_TASK) {
             fgets(buffer, MAX_STRING_LENGTH, stdin);
 
             char task[MAX_TASK_LENGTH];
@@ -229,9 +229,9 @@ void command_loop(struct todo_list *todo) {
 
             struct task *t = get_task(todo, task, category);
 
-            if(t == NULL){
+            if (t == NULL) {
                 printf("Could not find task '%s' in category '%s'.\n", task, category);
-            }else{
+            } else {
                 change_repeat(todo, t);
             }
         }
@@ -249,15 +249,15 @@ void command_loop(struct todo_list *todo) {
 
 void add_task(struct todo_list *todo, struct task *t) {
     // skip same task
-    if(has_same_task(todo, t)){
+    if (has_same_task(todo, t)) {
         return;
     }
-    if(todo->tasks == NULL){
+    if (todo->tasks == NULL) {
         todo->tasks = t;
-    }else{
+    } else {
         // add task to the last
         struct task *ct = todo->tasks;
-        while(ct->next != NULL){
+        while (ct->next != NULL) {
             ct = ct->next;
         }
         ct->next = t;
@@ -266,8 +266,8 @@ void add_task(struct todo_list *todo, struct task *t) {
 
 int has_same_task(struct todo_list *todo, struct task *t) {
     struct task *ct = todo->tasks;
-    while(ct != NULL){
-        if(strcmp(ct->task_name, t->task_name) == 0 && strcmp(ct->category, t->category) == 0){
+    while (ct != NULL) {
+        if (strcmp(ct->task_name, t->task_name) == 0 && strcmp(ct->category, t->category) == 0) {
             return 1;
         }
         ct = ct->next;
@@ -276,11 +276,11 @@ int has_same_task(struct todo_list *todo, struct task *t) {
 }
 
 struct task *get_task(struct todo_list *todo,
-        char task_name[MAX_TASK_LENGTH],
-        char task_category[MAX_CATEGORY_LENGTH]){
+                      char task_name[MAX_TASK_LENGTH],
+                      char task_category[MAX_CATEGORY_LENGTH]) {
     struct task *ct = todo->tasks;
-    while(ct != NULL){
-        if(strcmp(ct->task_name, task_name) == 0 && strcmp(ct->category, task_category) == 0){
+    while (ct != NULL) {
+        if (strcmp(ct->task_name, task_name) == 0 && strcmp(ct->category, task_category) == 0) {
             return ct;
         }
         ct = ct->next;
@@ -288,14 +288,14 @@ struct task *get_task(struct todo_list *todo,
     return NULL;
 }
 
-void print_all_tasks(struct todo_list *todo){
+void print_all_tasks(struct todo_list *todo) {
     struct task *ct = todo->tasks;
     puts("==== Your ToDo List ====");
-    if(ct == NULL){
+    if (ct == NULL) {
         puts("All tasks completed, you smashed it!");
-    }else{
+    } else {
         int task_num = 1;
-        while(ct != NULL){
+        while (ct != NULL) {
             print_one_task(task_num, ct);
             task_num++;
             ct = ct->next;
@@ -304,24 +304,24 @@ void print_all_tasks(struct todo_list *todo){
     puts("====   That's it!   ====");
 }
 
-int number_tasks(struct todo_list *todo){
+int number_tasks(struct todo_list *todo) {
     int cnt = 0;
     struct task *ct = todo->tasks;
-    while(ct != NULL){
+    while (ct != NULL) {
         cnt += 1;
         ct = ct->next;
     }
     return cnt;
 }
 
-void remove_task(struct todo_list *todo, struct task *t){
+void remove_task(struct todo_list *todo, struct task *t) {
     struct task *ct = todo->tasks;
-    if(ct == t){
+    if (ct == t) {
         todo->tasks = todo->tasks->next;
         return;
     }
-    while(ct->next != NULL){
-        if(ct->next == t){
+    while (ct->next != NULL) {
+        if (ct->next == t) {
             ct->next = t->next;
             break;
         }
@@ -329,8 +329,8 @@ void remove_task(struct todo_list *todo, struct task *t){
     }
 }
 
-void add_completed_task(struct todo_list *todo, struct completed_task *t_d){
-    if(todo->completed_tasks == NULL){
+void add_completed_task(struct todo_list *todo, struct completed_task *t_d) {
+    if (todo->completed_tasks == NULL) {
         todo->completed_tasks = t_d;
         return;
     }
@@ -338,13 +338,13 @@ void add_completed_task(struct todo_list *todo, struct completed_task *t_d){
     todo->completed_tasks = t_d;
 }
 
-void print_completed_tasks(struct todo_list *todo){
+void print_completed_tasks(struct todo_list *todo) {
     struct completed_task *ct_d = todo->completed_tasks;
     puts("==== Completed Tasks ====");
-    if(ct_d == NULL){
+    if (ct_d == NULL) {
         puts("No tasks have been completed today!");
-    }else{
-        while(ct_d != NULL){
+    } else {
+        while (ct_d != NULL) {
             print_completed_task(ct_d);
             ct_d = ct_d->next;
         }
@@ -353,31 +353,31 @@ void print_completed_tasks(struct todo_list *todo){
     puts("=========================");
 }
 
-int average_complete_time(struct todo_list *todo, char task_category[MAX_CATEGORY_LENGTH]){
+int average_complete_time(struct todo_list *todo, char task_category[MAX_CATEGORY_LENGTH]) {
     int sum = 0;
     int cnt = 0;
     struct completed_task *ct_d = todo->completed_tasks;
-    while(ct_d != NULL){
+    while (ct_d != NULL) {
         struct task *t = ct_d->task;
-        if(strcmp(t->category, task_category) == 0){
+        if (strcmp(t->category, task_category) == 0) {
             sum += ct_d->finish_time - ct_d->start_time;
             cnt += 1;
         }
         ct_d = ct_d->next;
     }
-    if(cnt == 0){
+    if (cnt == 0) {
         return 100;
-    }else{
+    } else {
         return sum / cnt;
     }
 }
 
-void print_average_time(struct todo_list *todo){
+void print_average_time(struct todo_list *todo) {
     struct task *ct = todo->tasks;
     puts("Expected completion time for remaining tasks:");
     puts("");
     int task_num = 1;
-    while(ct != NULL){
+    while (ct != NULL) {
         print_one_task(task_num, ct);
         printf("Expected completion time: %d minutes\n", average_complete_time(todo, ct->category));
         puts("");
@@ -386,14 +386,14 @@ void print_average_time(struct todo_list *todo){
     }
 }
 
-void delete_completed_tasks(struct todo_list *todo){
+void delete_completed_tasks(struct todo_list *todo) {
     struct completed_task *ct_d = todo->completed_tasks;
-    while(ct_d != NULL){
+    while (ct_d != NULL) {
         struct completed_task *nt_d = ct_d->next;
-        if(ct_d->task->repeated){
+        if (ct_d->task->repeated) {
             ct_d->task->next = NULL;
             add_task(todo, ct_d->task);
-        }else{
+        } else {
             free(ct_d->task);
         }
         free(ct_d);
@@ -402,13 +402,13 @@ void delete_completed_tasks(struct todo_list *todo){
     todo->completed_tasks = NULL;
 }
 
-void change_repeat(struct todo_list *todo, struct task *t){
+void change_repeat(struct todo_list *todo, struct task *t) {
     t->repeated = !t->repeated;
 }
 
-void remove_all_tasks(struct todo_list *todo){
+void remove_all_tasks(struct todo_list *todo) {
     struct task *ct = todo->tasks;
-    while(ct != NULL){
+    while (ct != NULL) {
         struct task *nt = ct->next;
         free(ct);
         ct = nt;
