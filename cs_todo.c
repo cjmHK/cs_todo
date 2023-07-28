@@ -385,6 +385,7 @@ void delete_completed_tasks(struct todo_list *todo){
     while(ct_d != NULL){
         struct completed_task *nt_d = ct_d->next;
         if(ct_d->task->repeated){
+            ct_d->task->next = NULL;
             add_task(todo, ct_d->task);
         }else{
             free(ct_d->task);
