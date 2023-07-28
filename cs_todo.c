@@ -76,6 +76,8 @@ void delete_completed_tasks(struct todo_list *todo);
 
 void change_repeat(struct todo_list *todo, struct task *t);
 
+void remove_all_tasks(struct todo_list *todo);
+
 ////////////////////////////////////////////////////////////////////////////////
 //////////////////////// PROVIDED HELPER PROTOTYPES ////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
@@ -119,6 +121,10 @@ int main(void) {
     command_loop(todo);
 
     puts("All done!");
+
+    delete_completed_tasks(todo);
+
+    remove_all_tasks(todo);
 
     return 0;
 }
@@ -398,6 +404,15 @@ void delete_completed_tasks(struct todo_list *todo){
 
 void change_repeat(struct todo_list *todo, struct task *t){
     t->repeated = !t->repeated;
+}
+
+void remove_all_tasks(struct todo_list *todo){
+    struct task *ct = todo->tasks;
+    while(ct != NULL){
+        struct task *nt = ct->next;
+        free(ct);
+        ct = nt;
+    }
 }
 
 
