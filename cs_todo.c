@@ -332,7 +332,7 @@ void print_average_time(struct todo_list *todo){
     struct task *ct = todo->tasks;
     puts("Expected completion time for remaining tasks:");
     puts("");
-    int task_num = 0;
+    int task_num = 1;
     while(ct != NULL){
         print_one_task(task_num, ct);
         printf("Expected completion time: %d minutes\n", average_complete_time(todo, ct->category));
