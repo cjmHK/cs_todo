@@ -17,6 +17,7 @@
 #define COMMAND_PRINT_COMPLETED 'P'
 #define COMMAND_PRINT_TIME 'e'
 #define COMMAND_DELETE_TASK 'd'
+#define COMMAND_FINISH_DAY 'f'
 
 enum priority { LOW, MEDIUM, HIGH };
 
@@ -69,6 +70,8 @@ void print_completed_tasks(struct todo_list *todo);
 int average_complete_time(struct todo_list *todo, char task_category[MAX_CATEGORY_LENGTH]);
 
 void print_average_time(struct todo_list *todo);
+
+void delete_completed_tasks(struct todo_list *todo);
 
 ////////////////////////////////////////////////////////////////////////////////
 //////////////////////// PROVIDED HELPER PROTOTYPES ////////////////////////////
@@ -205,6 +208,8 @@ void command_loop(struct todo_list *todo) {
             }else{
                 remove_task(todo, t);
             }
+        }else if(command == COMMAND_FINISH_DAY){
+            delete_completed_tasks(todo);
         }
 
         printf("Enter Command: ");
@@ -355,6 +360,17 @@ void print_average_time(struct todo_list *todo){
         task_num += 1;
         ct = ct->next;
     }
+}
+
+void delete_completed_tasks(struct todo_list *todo){
+    struct completed_task *ct_d = todo->completed_tasks;
+    while(ct_d != NULL){
+        struct completed_task *nt_d = ct_d->next;
+        free(ct_d->task);
+        free(ct_d);
+        ct_d = nt_d;
+    }
+    todo->completed_tasks = NULL;
 }
 
 
