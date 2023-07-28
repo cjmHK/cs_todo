@@ -15,6 +15,7 @@
 #define COMMAND_PRINT_NUMBER 'n'
 #define COMMAND_TASK_COMPLETION 'c'
 #define COMMAND_PRINT_COMPLETED 'P'
+#define COMMAND_PRINT_TIME 'e'
 
 enum priority { LOW, MEDIUM, HIGH };
 
@@ -63,6 +64,10 @@ void remove_task(struct todo_list *todo, struct task *t);
 void add_completed_task(struct todo_list *todo, struct completed_task *t_d);
 
 void print_completed_tasks(struct todo_list *todo);
+
+int average_complete_time(struct todo_list *todo, char task_category[MAX_CATEGORY_LENGTH]);
+
+void print_average_time(struct todo_list *todo);
 
 ////////////////////////////////////////////////////////////////////////////////
 //////////////////////// PROVIDED HELPER PROTOTYPES ////////////////////////////
@@ -183,6 +188,8 @@ void command_loop(struct todo_list *todo) {
             }
         }else if(command == COMMAND_PRINT_COMPLETED){
             print_completed_tasks(todo);
+        }else if(command == COMMAND_PRINT_TIME){
+
         }
 
         printf("Enter Command: ");
@@ -300,6 +307,39 @@ void print_completed_tasks(struct todo_list *todo){
     }
 
     puts("=========================");
+}
+
+int average_complete_time(struct todo_list *todo, char task_category[MAX_CATEGORY_LENGTH]){
+    int sum = 0;
+    int cnt = 0;
+    struct completed_task *ct_d = todo->completed_tasks;
+    while(ct_d != NULL){
+        struct task *t = ct_d->task;
+        if(strcmp(t->category, task_category) == 0){
+            sum += ct_d->finish_time - ct_d->start_time;
+            cnt += 1;
+        }
+        ct_d = ct_d->next;
+    }
+    if(cnt == 0){
+        return 100;
+    }else{
+        return sum / cnt;
+    }
+}
+
+void print_average_time(struct todo_list *todo){
+    struct task *ct = todo->tasks;
+    puts("Expected completion time for remaining tasks:");
+    puts("");
+    int task_num = 0;
+    while(ct != NULL){
+        print_one_task(task_num, ct);
+        printf("Expected completion time: %d minutes\n", average_complete_time(todo, ct->category));
+        puts("");
+        task_num += 1;
+        ct = ct->next;
+    }
 }
 
 
